@@ -5,22 +5,22 @@ using TrustAccountProvisioningApi.Services;
 
 namespace TrustAccountProvisioningApi.Controllers
 {
-    [RoutePrefix("api/account-number-list")]
-    public class AccountNumberListController : ApiController
+    [RoutePrefix("api/trust-account")]
+    public class TrustAccountController : ApiController
     {
-        private readonly IAccountNumberListService _accountNumberListService;
+        private readonly ITrustAccountService _trustAccountService;
 
-        public AccountNumberListController(IAccountNumberListService accountNumberListService)
+        public TrustAccountController(ITrustAccountService trustAccountService)
         {
-            _accountNumberListService = accountNumberListService
-                ?? throw new ArgumentNullException(nameof(accountNumberListService));
+            _trustAccountService = trustAccountService
+                ?? throw new ArgumentNullException(nameof(trustAccountService));
         }
 
         [HttpPost]
         [Route("search")]
-        public IHttpActionResult Search(AccountNumberListSearchRequest request)
+        public IHttpActionResult Search(TrustAccountSearchRequest request)
         {
-            return Ok(_accountNumberListService.Search(request));
+            return Ok(_trustAccountService.Search(request));
         }
 
         [HttpPost]
@@ -32,19 +32,19 @@ namespace TrustAccountProvisioningApi.Controllers
                 return BadRequest("Id is required.");
             }
 
-            var accountNumber = _accountNumberListService.Get(request.Id);
-            return accountNumber == null
+            var trustAccount = _trustAccountService.Get(request.Id);
+            return trustAccount == null
                 ? (IHttpActionResult)NotFound()
-                : Ok(accountNumber);
+                : Ok(trustAccount);
         }
 
         [HttpPost]
         [Route("create")]
-        public IHttpActionResult Create(AccountNumberListCreateRequest request)
+        public IHttpActionResult Create(TrustAccountCreateRequest request)
         {
             try
             {
-                return Ok(_accountNumberListService.Create(request));
+                return Ok(_trustAccountService.Create(request));
             }
             catch (ArgumentException ex)
             {
@@ -54,14 +54,14 @@ namespace TrustAccountProvisioningApi.Controllers
 
         [HttpPost]
         [Route("update")]
-        public IHttpActionResult Update(AccountNumberListUpdateRequest request)
+        public IHttpActionResult Update(TrustAccountUpdateRequest request)
         {
             try
             {
-                var accountNumber = _accountNumberListService.Update(request);
-                return accountNumber == null
+                var trustAccount = _trustAccountService.Update(request);
+                return trustAccount == null
                     ? (IHttpActionResult)NotFound()
-                    : Ok(accountNumber);
+                    : Ok(trustAccount);
             }
             catch (ArgumentException ex)
             {
@@ -78,7 +78,7 @@ namespace TrustAccountProvisioningApi.Controllers
                 return BadRequest("Id is required.");
             }
 
-            return _accountNumberListService.Delete(request.Id)
+            return _trustAccountService.Delete(request.Id)
                 ? (IHttpActionResult)Ok()
                 : NotFound();
         }

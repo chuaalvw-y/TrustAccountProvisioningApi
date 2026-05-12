@@ -6,13 +6,13 @@ namespace TrustAccountProvisioningApi.Services
 {
     public interface IAccountNumberListService
     {
-        IEnumerable<AccountNumberListDto> Search(AccountNumberListSearchRequest request);
+        IEnumerable<AccountNumberListResponse> Search(AccountNumberListSearchRequest request);
 
-        AccountNumberListDto Get(Guid accountNumberListId);
+        AccountNumberListResponse Get(Guid accountNumberListId);
 
-        AccountNumberListDto Create(AccountNumberListCreateRequest request);
+        AccountNumberListResponse Create(AccountNumberListCreateRequest request);
 
-        AccountNumberListDto Update(AccountNumberListUpdateRequest request);
+        AccountNumberListResponse Update(AccountNumberListUpdateRequest request);
 
         bool Delete(Guid accountNumberListId);
     }

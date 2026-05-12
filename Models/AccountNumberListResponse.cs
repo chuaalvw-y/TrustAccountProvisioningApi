@@ -2,7 +2,7 @@ using System;
 
 namespace TrustAccountProvisioningApi.Models
 {
-    public class AccountNumberListDto
+    public class AccountNumberListResponse
     {
         public Guid AccountNumberListId { get; set; }
 

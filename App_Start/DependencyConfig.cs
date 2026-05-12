@@ -19,6 +19,8 @@ namespace TrustAccountProvisioningApi
             container.RegisterSingleton<IChuADatabase>(CreateDatabase);
             container.RegisterSingleton<IApplicationLogger>(() => ObservabilityConfig.Logger);
             container.Register<IAccountNumberListService, AccountNumberListService>();
+            container.Register<INameAndAddressService, NameAndAddressService>();
+            container.Register<ITrustAccountService, TrustAccountService>();
 
             var resolver = new AppDependencyResolver(container);
             DependencyResolver.SetResolver(resolver);

@@ -189,21 +189,36 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AccountNumberListController.cs" />
     <Compile Include="Controllers\HealthController.cs" />
+    <Compile Include="Controllers\NameAndAddressController.cs" />
+    <Compile Include="Controllers\TrustAccountController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Infrastructure\AppDependencyResolver.cs" />
     <Compile Include="Infrastructure\SimpleContainer.cs" />
     <Compile Include="Models\AccountNumberListCreateRequest.cs" />
-    <Compile Include="Models\AccountNumberListDeleteRequest.cs" />
-    <Compile Include="Models\AccountNumberListDto.cs" />
-    <Compile Include="Models\AccountNumberListGetRequest.cs" />
+    <Compile Include="Models\AccountNumberListResponse.cs" />
     <Compile Include="Models\AccountNumberListSearchRequest.cs" />
     <Compile Include="Models\AccountNumberListUpdateRequest.cs" />
+    <Compile Include="Models\IdRequest.cs" />
+    <Compile Include="Models\NameAndAddressCreateRequest.cs" />
+    <Compile Include="Models\NameAndAddressResponse.cs" />
+    <Compile Include="Models\NameAndAddressSearchRequest.cs" />
+    <Compile Include="Models\NameAndAddressUpdateRequest.cs" />
+    <Compile Include="Models\TrustAccountCreateRequest.cs" />
+    <Compile Include="Models\TrustAccountResponse.cs" />
+    <Compile Include="Models\TrustAccountSearchRequest.cs" />
+    <Compile Include="Models\TrustAccountUpdateRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AccountNumberMasker.cs" />
     <Compile Include="Services\AccountNumberListService.cs" />
     <Compile Include="Services\IAccountNumberListService.cs" />
+    <Compile Include="Services\INameAndAddressService.cs" />
+    <Compile Include="Services\ITrustAccountService.cs" />
+    <Compile Include="Services\NameAndAddressService.cs" />
+    <Compile Include="Services\SensitiveValueMasker.cs" />
+    <Compile Include="Services\SqlColumnList.cs" />
+    <Compile Include="Services\TrustAccountService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />

@@ -21,7 +21,7 @@ namespace TrustAccountProvisioningApi.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public IEnumerable<AccountNumberListDto> Search(AccountNumberListSearchRequest request)
+        public IEnumerable<AccountNumberListResponse> Search(AccountNumberListSearchRequest request)
         {
             request = request ?? new AccountNumberListSearchRequest();
             _logger.Information(
@@ -39,12 +39,12 @@ SELECT AccountNumberListId,
        CreatedBy,
        ModifiedDate,
        ModifiedBy
-FROM dbo.AccountNumberList
+FROM account.AccountNumberList
 WHERE (@AccountNumber IS NULL OR AccountNumber = @AccountNumber)
   AND (@EmployeeId IS NULL OR EmployeeId = @EmployeeId)
 ORDER BY CreatedDate DESC;";
 
-            var rows = new List<AccountNumberListDto>();
+            var rows = new List<AccountNumberListResponse>();
 
             using (var connection = CreateConnection())
             using (var command = connection.CreateCommand())
@@ -67,7 +67,7 @@ ORDER BY CreatedDate DESC;";
             return rows;
         }
 
-        public AccountNumberListDto Get(Guid accountNumberListId)
+        public AccountNumberListResponse Get(Guid accountNumberListId)
         {
             _logger.Information(
                 "Getting account number list entry {AccountNumberListId}.",
@@ -83,7 +83,7 @@ SELECT AccountNumberListId,
        CreatedBy,
        ModifiedDate,
        ModifiedBy
-FROM dbo.AccountNumberList
+FROM account.AccountNumberList
 WHERE AccountNumberListId = @AccountNumberListId;";
 
             using (var connection = CreateConnection())
@@ -103,7 +103,7 @@ WHERE AccountNumberListId = @AccountNumberListId;";
             }
         }
 
-        public AccountNumberListDto Create(AccountNumberListCreateRequest request)
+        public AccountNumberListResponse Create(AccountNumberListCreateRequest request)
         {
             ValidateCreate(request);
             _logger.Information(
@@ -112,7 +112,7 @@ WHERE AccountNumberListId = @AccountNumberListId;";
                 request.EmployeeId);
 
             const string sql = @"
-INSERT dbo.AccountNumberList
+INSERT account.AccountNumberList
        (AccountNumber,
         EmployeeId,
         Manual,
@@ -159,7 +159,7 @@ VALUES (@AccountNumber,
             throw new InvalidOperationException("Account number was not created.");
         }
 
-        public AccountNumberListDto Update(AccountNumberListUpdateRequest request)
+        public AccountNumberListResponse Update(AccountNumberListUpdateRequest request)
         {
             ValidateUpdate(request);
             _logger.Information(
@@ -167,7 +167,7 @@ VALUES (@AccountNumber,
                 request.AccountNumberListId);
 
             const string sql = @"
-UPDATE dbo.AccountNumberList
+UPDATE account.AccountNumberList
 SET AccountNumber = @AccountNumber,
     EmployeeId = @EmployeeId,
     Manual = @Manual,
@@ -214,7 +214,7 @@ WHERE AccountNumberListId = @AccountNumberListId;";
                 accountNumberListId);
 
             const string sql = @"
-DELETE dbo.AccountNumberList
+DELETE account.AccountNumberList
 WHERE AccountNumberListId = @AccountNumberListId;";
 
             using (var connection = CreateConnection())
@@ -241,9 +241,9 @@ WHERE AccountNumberListId = @AccountNumberListId;";
             return new SqlConnection(connectionString);
         }
 
-        private static AccountNumberListDto MapAccountNumberList(IDataRecord record)
+        private static AccountNumberListResponse MapAccountNumberList(IDataRecord record)
         {
-            return new AccountNumberListDto
+            return new AccountNumberListResponse
             {
                 AccountNumberListId = record.GetGuid(record.GetOrdinal("AccountNumberListId")),
                 AccountNumber = record.GetString(record.GetOrdinal("AccountNumber")),
