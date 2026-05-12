@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountNumberMaskerTests.cs" />
+    <Compile Include="AccountsControllerTests.cs" />
     <Compile Include="ControllerValidationTests.cs" />
     <Compile Include="SensitiveValueMaskerTests.cs" />
     <Compile Include="SqlColumnListTests.cs" />

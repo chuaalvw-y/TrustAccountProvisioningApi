@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 using ChuA.DatabaseLegacy;
 using ChuA.ObservabilityLegacy.Abstractions;
 using TrustAccountProvisioningApi.Models;
@@ -80,7 +81,7 @@ ModifiedDate";
             var sql = $@"
 SELECT {SelectColumns}
 FROM account.TrustAccount
-WHERE (@AccountNumber IS NULL OR AccountNumber = @AccountNumber)
+WHERE (@AccountNumber IS NULL OR AccountNumber LIKE @AccountNumber + '%')
   AND (@AccountStatus IS NULL OR AccountStatus = @AccountStatus)
   AND (@OrganizationId IS NULL OR OrganizationId = @OrganizationId)
   AND (@RelationshipId IS NULL OR RelationshipId = @RelationshipId)
@@ -275,7 +276,72 @@ WHERE TrustAccountId = @TrustAccountId;";
             }
         }
 
+        public async Task<CreateAccountResponse> CreateAccountAsync(CreateAccountRequest request)
+        {
+            ValidateCreateAccount(request);
+
+            _logger.Information(
+                "Stored procedure account creation started for AccountNumber {AccountNumber}.",
+                AccountNumberMasker.Mask(request.AccountNumber));
+
+            using (var connection = CreateSqlConnection())
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = "account.CreateAccount";
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.Add(CreateSqlParameter(
+                    "@CreatedBy",
+                    SqlDbType.VarChar,
+                    50,
+                    request.CreatedBy));
+                command.Parameters.Add(CreateSqlParameter(
+                    "@AccountNumber",
+                    SqlDbType.VarChar,
+                    16,
+                    NullIfWhiteSpace(request.AccountNumber)));
+
+                await connection.OpenAsync();
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    if (!await reader.ReadAsync())
+                    {
+                        _logger.Warning(
+                            "Stored procedure account creation failed because no result row was returned.");
+
+                        return new CreateAccountResponse
+                        {
+                            Success = false,
+                            Message = "Account creation did not return a result."
+                        };
+                    }
+
+                    var response = MapCreateAccountResponse(reader);
+
+                    if (response.Success)
+                    {
+                        _logger.Information(
+                            "Stored procedure account creation succeeded for AccountNumber {AccountNumber}.",
+                            AccountNumberMasker.Mask(response.AccountNumber));
+                    }
+                    else
+                    {
+                        _logger.Warning(
+                            "Stored procedure account creation failed with message {Message}.",
+                            response.Message);
+                    }
+
+                    return response;
+                }
+            }
+        }
+
         private IDbConnection CreateConnection()
+        {
+            return CreateSqlConnection();
+        }
+
+        private SqlConnection CreateSqlConnection()
         {
             var connectionString = _database.Options?.ConnectionString;
 
@@ -286,6 +352,18 @@ WHERE TrustAccountId = @TrustAccountId;";
             }
 
             return new SqlConnection(connectionString);
+        }
+
+        private static SqlParameter CreateSqlParameter(
+            string name,
+            SqlDbType type,
+            int size,
+            object value)
+        {
+            return new SqlParameter(name, type, size)
+            {
+                Value = value ?? DBNull.Value
+            };
         }
 
         private static void AddRequestParameters(IDbCommand command, TrustAccountCreateRequest request)
@@ -378,6 +456,27 @@ WHERE TrustAccountId = @TrustAccountId;";
                 ModifiedBy = GetNullableString(record, "ModifiedBy"),
                 ModifiedDate = GetNullableDateTime(record, "ModifiedDate")
             };
+        }
+
+        private static CreateAccountResponse MapCreateAccountResponse(IDataRecord record)
+        {
+            return new CreateAccountResponse
+            {
+                Success = record.GetBoolean(record.GetOrdinal("Success")),
+                AccountNumber = GetNullableString(record, "AccountNumber"),
+                Message = GetNullableString(record, "Message")
+            };
+        }
+
+        private static void ValidateCreateAccount(CreateAccountRequest request)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            RequireString(request.CreatedBy, nameof(request.CreatedBy), 50);
+            OptionalString(request.AccountNumber, nameof(request.AccountNumber), 16);
         }
 
         private static void ValidateCreate(TrustAccountCreateRequest request)

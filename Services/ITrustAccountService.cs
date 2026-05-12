@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TrustAccountProvisioningApi.Models;
 
 namespace TrustAccountProvisioningApi.Services
@@ -15,5 +16,7 @@ namespace TrustAccountProvisioningApi.Services
         TrustAccountResponse Update(TrustAccountUpdateRequest request);
 
         bool Delete(Guid trustAccountId);
+
+        Task<CreateAccountResponse> CreateAccountAsync(CreateAccountRequest request);
     }
 }

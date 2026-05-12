@@ -188,6 +188,7 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AccountNumberListController.cs" />
+    <Compile Include="Controllers\AccountsController.cs" />
     <Compile Include="Controllers\HealthController.cs" />
     <Compile Include="Controllers\NameAndAddressController.cs" />
     <Compile Include="Controllers\TrustAccountController.cs" />
@@ -200,6 +201,8 @@
     <Compile Include="Models\AccountNumberListResponse.cs" />
     <Compile Include="Models\AccountNumberListSearchRequest.cs" />
     <Compile Include="Models\AccountNumberListUpdateRequest.cs" />
+    <Compile Include="Models\CreateAccountRequest.cs" />
+    <Compile Include="Models\CreateAccountResponse.cs" />
     <Compile Include="Models\IdRequest.cs" />
     <Compile Include="Models\NameAndAddressCreateRequest.cs" />
     <Compile Include="Models\NameAndAddressResponse.cs" />

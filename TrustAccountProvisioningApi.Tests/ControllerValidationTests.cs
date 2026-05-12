@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http.Results;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TrustAccountProvisioningApi.Controllers;
@@ -104,6 +105,9 @@ namespace TrustAccountProvisioningApi.Tests
                 throw new NotImplementedException();
 
             public bool Delete(Guid trustAccountId) =>
+                throw new NotImplementedException();
+
+            public Task<CreateAccountResponse> CreateAccountAsync(CreateAccountRequest request) =>
                 throw new NotImplementedException();
         }
 
